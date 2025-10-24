@@ -3,6 +3,7 @@ import 'package:prac5/features/trp/models/trip_model.dart';
 import 'package:prac5/shared/eco_data_manager.dart';
 import 'package:provider/provider.dart';
 
+
 class TripHistoryScreen extends StatelessWidget {
   const TripHistoryScreen({super.key});
 
@@ -28,38 +29,60 @@ class TripHistoryScreen extends StatelessWidget {
             itemCount: trips.length,
             itemBuilder: (context, index) {
               final trip = trips.reversed.toList()[index];
-              return Card(
-                margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
-                child: ListTile(
-                  leading: Icon(trip.transport.iconData, size: 30),
-                  title: Text(
-                    '${trip.transport.name} (${trip.distanceKm.toStringAsFixed(1)} км)',
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  subtitle: Text(
-                    'Дата: ${trip.date.day}.${trip.date.month}.${trip.date.year}',
-                  ),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        '${trip.carbonFootprintKg.toStringAsFixed(3)} кг CO₂',
-                        style: const TextStyle(fontSize: 14),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.delete_outline),
-                        onPressed: () {
-                          dataManager.deleteTrip(trip.id);
-                        },
-                      ),
-                    ],
-                  ),
-                ),
+
+              return TripRow(
+                trip: trip,
+                key: ValueKey(trip.id),
+                onRemove: () {
+                  dataManager.deleteTrip(trip.id);
+                },
               );
             },
           ),
         );
       },
+    );
+  }
+}
+
+
+class TripRow extends StatelessWidget {
+  final TripModel trip;
+  final VoidCallback? onRemove;
+
+  const TripRow({
+    required this.trip,
+    this.onRemove,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+      child: ListTile(
+        leading: Icon(trip.transport.iconData, size: 30),
+        title: Text(
+          '${trip.transport.name} (${trip.distanceKm.toStringAsFixed(1)} км)',
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        subtitle: Text(
+          'Дата: ${trip.date.day}.${trip.date.month}.${trip.date.year}',
+        ),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              '${trip.carbonFootprintKg.toStringAsFixed(3)} кг CO₂',
+              style: const TextStyle(fontSize: 14),
+            ),
+            IconButton(
+              icon: const Icon(Icons.delete_outline),
+              onPressed: onRemove,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

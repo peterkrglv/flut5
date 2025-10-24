@@ -152,3 +152,4 @@ class _TripAddScreenState extends State<TripAddScreen> {
     );
   }
 }
+
