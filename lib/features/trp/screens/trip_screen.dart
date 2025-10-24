@@ -3,6 +3,7 @@ import 'package:prac5/features/transport/models/transport_model.dart';
 import 'package:prac5/shared/eco_data_manager.dart';
 import 'package:provider/provider.dart';
 
+
 class TripAddScreen extends StatefulWidget {
   const TripAddScreen({super.key});
 
@@ -11,22 +12,15 @@ class TripAddScreen extends StatefulWidget {
 }
 
 class _TripAddScreenState extends State<TripAddScreen> {
-  final _distanceController = TextEditingController();
+  final TextEditingController _distanceController = TextEditingController();
   TransportModel? _selectedTransport;
   double _calculatedFootprint = 0.0;
 
-  @override
-  void dispose() {
-    _distanceController.dispose();
-    super.dispose();
-  }
-
   void _calculateFootprint() {
-    final distance = double.tryParse(_distanceController.text) ?? 0.0;
-
+    final double distance = double.tryParse(_distanceController.text) ?? 0.0;
     if (_selectedTransport != null && distance > 0) {
       setState(() {
-        _calculatedFootprint = (distance * _selectedTransport!.co2PerKm) / 1000;
+        _calculatedFootprint = distance * _selectedTransport!.co2PerKm;
       });
     } else {
       setState(() {
@@ -36,37 +30,45 @@ class _TripAddScreenState extends State<TripAddScreen> {
   }
 
   void _saveTrip() {
-    if (_calculatedFootprint > 0 && _selectedTransport != null) {
-      final dataManager = Provider.of<EcoDataManager>(context, listen: false);
-
-      dataManager.addTrip(
-        distanceKm: double.tryParse(_distanceController.text) ?? 0.0,
+    if (_calculatedFootprint > 0) {
+      Provider.of<EcoDataManager>(context, listen: false).addTrip(
+        distanceKm: double.parse(_distanceController.text),
         transport: _selectedTransport!,
         carbonFootprintKg: _calculatedFootprint,
       );
 
-      final String message =
-          'Сохранено: ${_selectedTransport!.name}. След: ${_calculatedFootprint.toStringAsFixed(3)} кг CO₂';
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(message),
-          duration: const Duration(seconds: 3),
-        ),
-      );
-
+      _distanceController.clear();
       setState(() {
-        _distanceController.clear();
         _selectedTransport = null;
         _calculatedFootprint = 0.0;
       });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Поездка сохранена!')),
+      );
     }
+  }
+
+  void _onFormChange() {
+    _calculateFootprint();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _distanceController.addListener(_onFormChange);
+  }
+
+  @override
+  void dispose() {
+    _distanceController.removeListener(_onFormChange);
+    _distanceController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final dataManager = Provider.of<EcoDataManager>(context, listen: false);
-    final transports = dataManager.availableTransports;
+    final transports = Provider.of<EcoDataManager>(context).availableTransports;
 
     return Scaffold(
       appBar: AppBar(
@@ -77,15 +79,13 @@ class _TripAddScreenState extends State<TripAddScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            TextField(
+            TextFormField(
               controller: _distanceController,
               keyboardType: const TextInputType.numberWithOptions(decimal: true),
               decoration: const InputDecoration(
-                labelText: 'Расстояние (км)',
-                hintText: 'Введите пройденное расстояние',
+                labelText: 'Пройденное расстояние (км)',
                 border: OutlineInputBorder(),
               ),
-              onChanged: (_) => _calculateFootprint(),
             ),
 
             const SizedBox(height: 20),
@@ -96,7 +96,7 @@ class _TripAddScreenState extends State<TripAddScreen> {
                 border: OutlineInputBorder(),
               ),
               value: _selectedTransport,
-              items: transports.map((TransportModel transport) {
+              items: transports.map((transport) {
                 return DropdownMenuItem<TransportModel>(
                   value: transport,
                   child: Row(
@@ -111,39 +111,56 @@ class _TripAddScreenState extends State<TripAddScreen> {
               onChanged: (TransportModel? newValue) {
                 setState(() {
                   _selectedTransport = newValue;
+                  _calculateFootprint();
                 });
-                _calculateFootprint();
               },
             ),
 
             const SizedBox(height: 30),
 
-            Container(
-              padding: const EdgeInsets.all(12.0),
-              decoration: BoxDecoration(
-                border: Border.all(color: Theme.of(context).dividerColor),
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              child: Text(
-                'Расчетный след CO₂: ${_calculatedFootprint.toStringAsFixed(3)} кг',
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ),
+            FootprintResultCard(footprintKg: _calculatedFootprint),
 
             const SizedBox(height: 30),
 
             ElevatedButton(
-              onPressed: (_calculatedFootprint > 0) ? _saveTrip : null,
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 15),
-              ),
-              child: const Text(
-                'Сохранить поездку',
-                style: TextStyle(fontSize: 18),
+              onPressed: _calculatedFootprint > 0 ? _saveTrip : null,
+              child: const Text('Сохранить поездку', style: TextStyle(fontSize: 18)),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
+class FootprintResultCard extends StatelessWidget {
+  final double footprintKg;
+
+  const FootprintResultCard({
+    required this.footprintKg,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 2,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            const Text(
+              'Расчетный углеродный след:',
+              style: TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              '${footprintKg.toStringAsFixed(3)} кг CO₂',
+              style: TextStyle(
+                fontSize: 32,
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.primary,
               ),
             ),
           ],
