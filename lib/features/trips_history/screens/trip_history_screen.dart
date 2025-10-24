@@ -28,7 +28,6 @@ class TripHistoryScreen extends StatelessWidget {
             itemCount: trips.length,
             itemBuilder: (context, index) {
               final trip = trips.reversed.toList()[index];
-
               return Card(
                 margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
                 child: ListTile(

@@ -34,7 +34,7 @@ class UserProfileScreen extends StatelessWidget {
                 Card(
                   child: ListTile(
                     leading: const Icon(Icons.alt_route),
-                    title: const Text('Количество учтенных поездок'),
+                    title: const Text('Количество поездок'),
                     trailing: Text(
                       '${userProfile.totalTrips}',
                       style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -66,27 +66,7 @@ class UserProfileScreen extends StatelessWidget {
                       style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                   ),
-                ),
-
-                const SizedBox(height: 30),
-
-                const Text(
-                  'Исходные данные:',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                ),
-                const SizedBox(height: 10),
-
-                Container(
-                  padding: const EdgeInsets.all(12.0),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Theme.of(context).dividerColor),
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: Text(
-                    'Поездок в памяти: ${userProfile.trips.length}',
-                    style: const TextStyle(fontStyle: FontStyle.italic),
-                  ),
-                ),
+                )
               ],
             ),
           ),
