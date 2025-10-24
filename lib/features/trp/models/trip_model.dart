@@ -1,13 +1,13 @@
 import 'package:prac5/features/transport/models/transport_model.dart';
 
-class Trip {
+class TripModel {
   final String id;
   final DateTime date;
   final double distanceKm;
-  final Transport transport;
+  final TransportModel transport;
   final double carbonFootprintKg;
 
-  const Trip({
+  const TripModel({
     required this.id,
     required this.date,
     required this.distanceKm,
@@ -15,14 +15,14 @@ class Trip {
     required this.carbonFootprintKg,
   });
 
-  Trip copyWith({
+  TripModel copyWith({
     String? id,
     DateTime? date,
     double? distanceKm,
-    Transport? transport,
+    TransportModel? transport,
     double? carbonFootprintKg,
   }) {
-    return Trip(
+    return TripModel(
       id: id ?? this.id,
       date: date ?? this.date,
       distanceKm: distanceKm ?? this.distanceKm,

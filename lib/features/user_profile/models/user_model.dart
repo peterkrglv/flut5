@@ -4,7 +4,7 @@ class UserProfile {
   final int totalTrips;
   final double totalCarbonKg;
   final String mostUsedTransport;
-  final List<Trip> trips;
+  final List<TripModel> trips;
 
   const UserProfile({
     required this.totalTrips,
@@ -17,7 +17,7 @@ class UserProfile {
     int? totalTrips,
     double? totalCarbonKg,
     String? mostUsedTransport,
-    List<Trip>? trips,
+    List<TripModel>? trips,
   }) {
     return UserProfile(
       totalTrips: totalTrips ?? this.totalTrips,

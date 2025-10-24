@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
 
-class Transport {
+class TransportModel {
   final int id;
   final String name;
   final IconData iconData;
   final double co2PerKm;
 
-  const Transport({
+  const TransportModel({
     required this.id,
     required this.name,
     required this.iconData,
     required this.co2PerKm,
   });
 
-  Transport copyWith({
+  TransportModel copyWith({
     int? id,
     String? name,
     IconData? iconData,
     double? co2PerKm,
   }) {
-    return Transport(
+    return TransportModel(
       id: id ?? this.id,
       name: name ?? this.name,
       iconData: iconData ?? this.iconData,
