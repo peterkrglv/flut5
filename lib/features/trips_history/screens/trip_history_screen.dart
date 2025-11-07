@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:prac5/features/trp/models/trip_model.dart';
 import 'package:prac5/shared/eco_data_manager.dart';
 import 'package:provider/provider.dart';
-
+import 'package:cached_network_image/cached_network_image.dart';
 
 class TripHistoryScreen extends StatelessWidget {
   const TripHistoryScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    const String placeholderImageUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTi6OfyjMF4VZFpCJHkjLLA3ndCjMeLQwBKxA&s";
+
     return Consumer<EcoDataManager>(
       builder: (context, dataManager, child) {
         final List<TripModel> trips = dataManager.trips;
@@ -18,10 +20,24 @@ class TripHistoryScreen extends StatelessWidget {
             title: const Text('История поездок'),
           ),
           body: trips.isEmpty
-              ? const Center(
-            child: Text(
-              'Пока нет сохраненных поездок.',
-              style: TextStyle(fontSize: 16),
+              ? Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CachedNetworkImage(
+                  imageUrl: placeholderImageUrl,
+                  width: 600,
+                  height: 600,
+                  fit: BoxFit.contain,
+                  placeholder: (context, url) => const CircularProgressIndicator(),
+                  errorWidget: (context, url, error) => const Icon(Icons.error, color: Colors.red, size: 100),
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  'Пока нет сохраненных поездок.',
+                  style: TextStyle(fontSize: 16),
+                ),
+              ],
             ),
           )
               : ListView.builder(
