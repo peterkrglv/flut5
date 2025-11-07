@@ -22,8 +22,8 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'CarbonTrack App',
         theme: ThemeData(
-            useMaterial3: true,
-            colorScheme: ColorScheme.fromSeed(seedColor: primaryGreen)
+          useMaterial3: true,
+          colorScheme: ColorScheme.fromSeed(seedColor: primaryGreen),
         ),
         home: const HomeScreen(),
       ),
@@ -31,14 +31,13 @@ class MyApp extends StatelessWidget {
   }
 }
 
-
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
-  static const _url = 'https://example.com/welcome_image.png';
-
   @override
   Widget build(BuildContext context) {
+    const String imageUrl =
+        "https://cdn-icons-png.flaticon.com/512/4431/4431647.png";
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -54,31 +53,39 @@ class HomeScreen extends StatelessWidget {
           children: <Widget>[
             const Text(
               'Добро пожаловать!',
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.w600,
-              ),
+              style: TextStyle(fontSize: 28, fontWeight: FontWeight.w600),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 10),
             const Text(
               'Ваш инструмент для учета углеродного следа.',
-              style: TextStyle(
-                fontSize: 16,
-              ),
+              style: TextStyle(fontSize: 16),
               textAlign: TextAlign.center,
             ),
-            CachedNetworkImage(
-                imageUrl: _url,
+
+            const SizedBox(height: 40),
+            Center(
+              child: CachedNetworkImage(
+                imageUrl: imageUrl,
+                fit: BoxFit.cover,
+
+                imageBuilder: (context, imageProvider) => Container(
+                  width: 200.0,
+                  height: 200.0,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                      image: imageProvider,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
                 progressIndicatorBuilder: (context, url, downloadProgress) =>
-                const CircularProgressIndicator(),
-                errorWidget: (context, url, error) =>
-                const Center(
-                    child: Icon(
-                      Icons.error,
-                      color: Colors.red,
-                    )
-                )
+                    const Center(child: CircularProgressIndicator()),
+                errorWidget: (context, url, error) => const Center(
+                  child: Icon(Icons.error, color: Colors.red, size: 100),
+                ),
+              ),
             ),
 
             const SizedBox(height: 40),
@@ -126,24 +133,21 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildNavigationButton(BuildContext context,
-      String title,
-      Icon icon,
-      Widget destinationScreen,) {
+  Widget _buildNavigationButton(
+    BuildContext context,
+    String title,
+    Icon icon,
+    Widget destinationScreen,
+  ) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: ElevatedButton.icon(
         icon: icon,
-        label: Text(
-          title,
-          style: const TextStyle(fontSize: 18),
-        ),
+        label: Text(title, style: const TextStyle(fontSize: 18)),
         onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => destinationScreen,
-            ),
-          );
+          Navigator.of(
+            context,
+          ).push(MaterialPageRoute(builder: (context) => destinationScreen));
         },
         style: ElevatedButton.styleFrom(
           padding: const EdgeInsets.symmetric(vertical: 20),
