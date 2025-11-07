@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:prac5/features/transport/models/transport_model.dart';
 import 'package:prac5/shared/eco_data_manager.dart';
 import 'package:provider/provider.dart';
-
+import 'package:cached_network_image/cached_network_image.dart';
 
 class TripAddScreen extends StatefulWidget {
   const TripAddScreen({super.key});
@@ -144,23 +144,49 @@ class FootprintResultCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const String iconUrl = "https://img.freepik.com/premium-vector/eco-co2-icon-vector-green-energy-carbon-emission-reduction-symbols_759725-1376.jpg";
+    const double iconSize = 120.0;
+
     return Card(
       elevation: 2,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Text(
-              'Расчетный углеродный след:',
-              style: TextStyle(fontSize: 16),
+            CachedNetworkImage(
+              imageUrl: iconUrl,
+              width: iconSize,
+              height: iconSize,
+              fit: BoxFit.contain,
+              placeholder: (context, url) => SizedBox(
+                width: iconSize,
+                height: iconSize,
+                child: const Center(child: CircularProgressIndicator(strokeWidth: 2)),
+              ),
+              errorWidget: (context, url, error) => const Icon(Icons.cloud_off, color: Colors.red, size: iconSize),
             ),
-            const SizedBox(height: 8),
-            Text(
-              '${footprintKg.toStringAsFixed(3)} кг CO₂',
-              style: TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.primary,
+
+            const SizedBox(width: 20),
+
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Расчитанный углеродный след:',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    '${footprintKg.toStringAsFixed(3)} кг CO₂',
+                    style: TextStyle(
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
@@ -169,4 +195,3 @@ class FootprintResultCard extends StatelessWidget {
     );
   }
 }
-
