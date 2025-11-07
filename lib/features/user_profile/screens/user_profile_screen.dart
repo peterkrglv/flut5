@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../../shared/eco_data_manager.dart';
 
@@ -8,6 +9,8 @@ class UserProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const String profileImageUrl = "https://cdn-icons-png.flaticon.com/512/8801/8801434.png";
+
     return Consumer<EcoDataManager>(
       builder: (context, dataManager, child) {
         final userProfile = dataManager.userProfile;
@@ -21,6 +24,18 @@ class UserProfileScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
+                Center(
+                  child: CachedNetworkImage(
+                    imageUrl: profileImageUrl,
+                    width: 150,
+                    height: 150,
+                    fit: BoxFit.contain,
+                    placeholder: (context, url) => const CircularProgressIndicator(),
+                    errorWidget: (context, url, error) => const Icon(Icons.error, color: Colors.red, size: 100),
+                  ),
+                ),
+                const SizedBox(height: 30),
+
                 const Text(
                   'Общая статистика',
                   style: TextStyle(
