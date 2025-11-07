@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:prac5/features/transport/screens/transport_screen.dart';
 import 'package:prac5/features/trips_history/screens/trip_history_screen.dart';
@@ -21,8 +22,8 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'CarbonTrack App',
         theme: ThemeData(
-          useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(seedColor: primaryGreen)
+            useMaterial3: true,
+            colorScheme: ColorScheme.fromSeed(seedColor: primaryGreen)
         ),
         home: const HomeScreen(),
       ),
@@ -33,6 +34,8 @@ class MyApp extends StatelessWidget {
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
+
+  static const _url = 'https://example.com/welcome_image.png';
 
   @override
   Widget build(BuildContext context) {
@@ -64,6 +67,18 @@ class HomeScreen extends StatelessWidget {
                 fontSize: 16,
               ),
               textAlign: TextAlign.center,
+            ),
+            CachedNetworkImage(
+                imageUrl: _url,
+                progressIndicatorBuilder: (context, url, downloadProgress) =>
+                const CircularProgressIndicator(),
+                errorWidget: (context, url, error) =>
+                const Center(
+                    child: Icon(
+                      Icons.error,
+                      color: Colors.red,
+                    )
+                )
             ),
 
             const SizedBox(height: 40),
@@ -111,12 +126,10 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildNavigationButton(
-      BuildContext context,
+  Widget _buildNavigationButton(BuildContext context,
       String title,
       Icon icon,
-      Widget destinationScreen,
-      ) {
+      Widget destinationScreen,) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: ElevatedButton.icon(
