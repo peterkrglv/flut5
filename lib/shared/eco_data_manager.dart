@@ -7,7 +7,7 @@ import 'package:uuid/uuid.dart';
 class EcoDataManager extends ChangeNotifier {
   final List<TransportModel> availableTransports = getMockTransports();
 
-  final List<TripModel> _trips = [];
+  final List<TripModel> _trips = getMockTrips();
 
   UserProfileModel get userProfile => _calculateProfile();
 

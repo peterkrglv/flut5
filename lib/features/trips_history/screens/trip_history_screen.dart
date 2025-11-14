@@ -18,6 +18,14 @@ class TripHistoryScreen extends StatelessWidget {
         return Scaffold(
           appBar: AppBar(
             title: const Text('История поездок'),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
           ),
           body: trips.isEmpty
               ? Center(

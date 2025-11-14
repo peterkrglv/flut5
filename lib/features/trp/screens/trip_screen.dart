@@ -82,6 +82,14 @@ class _TripAddScreenState extends State<TripAddScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Добавить поездку'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.close),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),

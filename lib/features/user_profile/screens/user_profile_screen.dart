@@ -18,6 +18,14 @@ class UserProfileScreen extends StatelessWidget {
         return Scaffold(
           appBar: AppBar(
             title: const Text('Ваш Эко-Профиль'),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
           ),
           body: SingleChildScrollView(
             padding: const EdgeInsets.all(16.0),

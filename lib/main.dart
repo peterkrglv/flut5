@@ -1,12 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:prac5/features/transport/models/transport_model.dart';
-import 'package:prac5/shared/app_router.dart';
 import 'package:prac5/shared/eco_data_manager.dart';
 import 'package:provider/provider.dart';
 
 import 'features/authorization/screens/auth_screen.dart';
+import 'features/transport/models/transport_model.dart';
+import 'features/transport/screens/transport_screen.dart';
+import 'features/trips_history/screens/trip_history_screen.dart';
+import 'features/trp/screens/trip_screen.dart';
+import 'features/user_profile/screens/user_profile_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,18 +16,19 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     const Color primaryGreen = Color(0xFF1B5E20);
     return ChangeNotifierProvider(
       create: (context) => EcoDataManager(),
-      child: MaterialApp.router(
+      child: MaterialApp(
         title: 'CarbonTrack App',
         theme: ThemeData(
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: primaryGreen),
         ),
-        routerConfig: router,
+        home: const AuthorizationScreen(),
       ),
     );
   }
@@ -91,18 +94,17 @@ class HomeScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     _buildSimpleButton(
-                      context,
-                      'Добавить новую поездку',
-                      '/add-trip',
-                      extra: 0.0,
-                    ),
-                    _buildSimpleButton(context, 'История поездок', '/history'),
-                    _buildSimpleButton(context, 'Эко-Профиль', '/profile'),
+                        context,
+                        'Добавить новую поездку',
+                        const TripAddScreen(initialDistanceKm: 0.0)),
+                    _buildSimpleButton(
+                        context, 'История поездок', const TripHistoryScreen()),
+                    _buildSimpleButton(
+                        context, 'Эко-Профиль', const UserProfileScreen()),
                     _buildSimpleButton(
                       context,
                       'Сравнение транспорта',
-                      '/transports-compare',
-                      extra: availableTransports,
+                      TransportScreen(transports: availableTransports),
                     ),
                   ],
                 ),
@@ -118,32 +120,34 @@ class HomeScreen extends StatelessWidget {
     return CachedNetworkImage(
       imageUrl: url,
       fit: BoxFit.cover,
-      imageBuilder: (context, imageProvider) => Container(
-        width: 200.0,
-        height: 200.0,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
-        ),
-      ),
+      imageBuilder: (context, imageProvider) =>
+          Container(
+            width: 200.0,
+            height: 200.0,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
+            ),
+          ),
       progressIndicatorBuilder: (context, url, downloadProgress) =>
-          const Center(child: CircularProgressIndicator()),
+      const Center(child: CircularProgressIndicator()),
       errorWidget: (context, url, error) =>
-          const Center(child: Icon(Icons.error, color: Colors.red, size: 100)),
+      const Center(child: Icon(Icons.error, color: Colors.red, size: 100)),
     );
   }
 
-  Widget _buildSimpleButton(
-    BuildContext context,
-    String title,
-    String path, {
-    dynamic extra,
-  }) {
+  Widget _buildSimpleButton(BuildContext context,
+      String title,
+      Widget destinationScreen,) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: ElevatedButton(
         onPressed: () {
-          context.go(path, extra: extra);
+          Navigator.of(context).push(
+            MaterialPageRoute<void>(
+              builder: (context) => destinationScreen,
+            ),
+          );
         },
         style: ElevatedButton.styleFrom(
           padding: const EdgeInsets.symmetric(vertical: 20),

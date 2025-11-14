@@ -17,6 +17,14 @@ class TransportScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Транспорт'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.close),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
       ),
       body: ListView(
         padding: const EdgeInsets.all(16.0),
