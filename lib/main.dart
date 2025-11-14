@@ -1,14 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:prac5/features/transport/models/transport_model.dart';
-import 'package:prac5/features/trp/models/trip_model.dart';
 import 'package:prac5/shared/app_router.dart';
 import 'package:prac5/shared/app_state.dart';
 import 'package:prac5/shared/eco_data_manager.dart';
 import 'package:provider/provider.dart';
 
-import 'features/authorization/screens/auth_screen.dart';
+import 'features/transport/models/transport_model.dart';
 
 void main() {
   runApp(const MyApp());
@@ -41,15 +39,16 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dataManager = Provider.of<EcoDataManager>(context, listen: false);
+
     final List<TransportModel> availableTransports =
         dataManager.availableTransports;
+
     const String imageUrl =
         "https://cdn-icons-png.flaticon.com/512/4431/4431647.png";
 
     return AppState(
-      trips: getMockTripHistory(),
-      child:
-      Scaffold(
+      transports: availableTransports,
+      child: Scaffold(
         appBar: AppBar(
           title: Text(
             appName,
@@ -60,7 +59,7 @@ class HomeScreen extends StatelessWidget {
             IconButton(
               icon: const Icon(Icons.logout),
               onPressed: () {
-                context.pushReplacement('/auth');
+                context.go('/login');
               },
             ),
           ],
@@ -111,7 +110,7 @@ class HomeScreen extends StatelessWidget {
             ],
           ),
         ),
-      )
+      ),
     );
   }
 
@@ -128,18 +127,18 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
       progressIndicatorBuilder: (context, url, downloadProgress) =>
-          const Center(child: CircularProgressIndicator()),
+      const Center(child: CircularProgressIndicator()),
       errorWidget: (context, url, error) =>
-          const Center(child: Icon(Icons.error, color: Colors.red, size: 100)),
+      const Center(child: Icon(Icons.error, color: Colors.red, size: 100)),
     );
   }
 
   Widget _buildNavigationButton(
-    BuildContext context,
-    String title,
-    String path, {
-    dynamic extra,
-  }) {
+      BuildContext context,
+      String title,
+      String path, {
+        dynamic extra,
+      }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: ElevatedButton(

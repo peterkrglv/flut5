@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:prac5/features/transport/models/transport_model.dart';
-import 'package:go_router/go_router.dart'; // <--- Добавлен импорт go_router
+import 'package:go_router/go_router.dart';
 
 class TransportScreen extends StatelessWidget {
   final List<TransportModel> transports;
