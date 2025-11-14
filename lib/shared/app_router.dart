@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import '../features/authorization/screens/auth_screen.dart';
 import '../features/transport/models/transport_model.dart';
 import '../features/transport/screens/transport_screen.dart';
 import '../features/trips_history/screens/trip_history_screen.dart';
@@ -7,14 +8,11 @@ import '../features/user_profile/screens/user_profile_screen.dart';
 import '../main.dart';
 
 final GoRouter router = GoRouter(
-  initialLocation: '/',
+  initialLocation: '/login',
   routes: [
     GoRoute(
-      path: '/',
-      builder: (context, state) {
-        final appName = state.extra as String;
-        return HomeScreen(appName: appName);
-      },
+      path: '/login',
+      builder: (context, state) => const AuthorizationScreen(),
     ),
     GoRoute(
       path: '/transports-compare',

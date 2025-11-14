@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:prac5/features/transport/models/transport_model.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:prac5/features/transport/models/transport_model.dart';
 
 class TransportScreen extends StatelessWidget {
-  const TransportScreen({super.key, required List<TransportModel> transports});
+  final List<TransportModel> transports;
+
+  const TransportScreen({
+    super.key,
+    required this.transports
+  });
 
   @override
   Widget build(BuildContext context) {
-    final transports = getMockTransports();
     const String imageUrl = "https://upload.wikimedia.org/wikipedia/commons/7/7a/KamAZ-6282_electric_bus_on_line_T25_in_Moscow.jpg";
 
     return Scaffold(

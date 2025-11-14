@@ -5,7 +5,12 @@ import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class TripAddScreen extends StatefulWidget {
-  const TripAddScreen({super.key, required double initialDistanceKm});
+  final double initialDistanceKm;
+
+  const TripAddScreen({
+    super.key,
+    required this.initialDistanceKm
+  });
 
   @override
   State<TripAddScreen> createState() => _TripAddScreenState();
@@ -57,6 +62,10 @@ class _TripAddScreenState extends State<TripAddScreen> {
   void initState() {
     super.initState();
     _distanceController.addListener(_onFormChange);
+
+    if (widget.initialDistanceKm > 0) {
+      _distanceController.text = widget.initialDistanceKm.toStringAsFixed(1);
+    }
   }
 
   @override
