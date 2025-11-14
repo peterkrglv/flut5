@@ -3,7 +3,7 @@ import 'package:prac5/features/transport/models/transport_model.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class TransportScreen extends StatelessWidget {
-  const TransportScreen({super.key});
+  const TransportScreen({super.key, required List<TransportModel> transports});
 
   @override
   Widget build(BuildContext context) {

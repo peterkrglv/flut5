@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class TripAddScreen extends StatefulWidget {
-  const TripAddScreen({super.key});
+  const TripAddScreen({super.key, required double initialDistanceKm});
 
   @override
   State<TripAddScreen> createState() => _TripAddScreenState();
