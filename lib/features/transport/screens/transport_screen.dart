@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:prac5/features/transport/models/transport_model.dart';
+import 'package:go_router/go_router.dart'; // <--- Добавлен импорт go_router
 
 class TransportScreen extends StatelessWidget {
   final List<TransportModel> transports;
@@ -17,6 +18,12 @@ class TransportScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Транспорт'),
+        leading: IconButton(
+          icon: const Icon(Icons.close),
+          onPressed: () {
+            context.pop();
+          },
+        ),
       ),
       body: ListView(
         padding: const EdgeInsets.all(16.0),

@@ -15,6 +15,10 @@ final GoRouter router = GoRouter(
       builder: (context, state) => const AuthorizationScreen(),
     ),
     GoRoute(
+      path: '/home',
+      builder: (context, state) => const HomeScreen(appName: "CarbonTrack App",),
+    ),
+    GoRoute(
       path: '/transports-compare',
       builder: (context, state) {
         final transports = state.extra as List<TransportModel>;

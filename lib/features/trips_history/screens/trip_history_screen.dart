@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:prac5/features/trp/models/trip_model.dart';
 import 'package:prac5/shared/eco_data_manager.dart';
 import 'package:provider/provider.dart';
@@ -18,6 +19,12 @@ class TripHistoryScreen extends StatelessWidget {
         return Scaffold(
           appBar: AppBar(
             title: const Text('История поездок'),
+            leading: IconButton(
+              icon: const Icon(Icons.close),
+              onPressed: () {
+                context.pop();
+              },
+            ),
           ),
           body: trips.isEmpty
               ? Center(

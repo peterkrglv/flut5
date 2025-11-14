@@ -2,7 +2,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:prac5/features/transport/models/transport_model.dart';
+import 'package:prac5/features/trp/models/trip_model.dart';
 import 'package:prac5/shared/app_router.dart';
+import 'package:prac5/shared/app_state.dart';
 import 'package:prac5/shared/eco_data_manager.dart';
 import 'package:provider/provider.dart';
 
@@ -41,76 +43,75 @@ class HomeScreen extends StatelessWidget {
     final dataManager = Provider.of<EcoDataManager>(context, listen: false);
     final List<TransportModel> availableTransports =
         dataManager.availableTransports;
-
     const String imageUrl =
         "https://cdn-icons-png.flaticon.com/512/4431/4431647.png";
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          appName,
-          style: const TextStyle(fontWeight: FontWeight.normal),
-        ),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () {
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute<void>(
-                  builder: (context) => const AuthorizationScreen(),
-                ),
-              );
-            },
+    return AppState(
+      trips: getMockTripHistory(),
+      child:
+      Scaffold(
+        appBar: AppBar(
+          title: Text(
+            appName,
+            style: const TextStyle(fontWeight: FontWeight.normal),
           ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            const Text(
-              'Добро пожаловать!',
-              style: TextStyle(fontSize: 28, fontWeight: FontWeight.w600),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 10),
-            const Text(
-              'Ваш инструмент для учета углеродного следа.',
-              style: TextStyle(fontSize: 16),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 40),
-            Center(child: _buildImage(imageUrl)),
-            const SizedBox(height: 40),
-            Center(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 300),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    _buildSimpleButton(
-                      context,
-                      'Добавить новую поездку',
-                      '/add-trip',
-                      extra: 0.0,
-                    ),
-                    _buildSimpleButton(context, 'История поездок', '/history'),
-                    _buildSimpleButton(context, 'Эко-Профиль', '/profile'),
-                    _buildSimpleButton(
-                      context,
-                      'Сравнение транспорта',
-                      '/transports-compare',
-                      extra: availableTransports,
-                    ),
-                  ],
-                ),
-              ),
+          centerTitle: true,
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.logout),
+              onPressed: () {
+                context.pushReplacement('/auth');
+              },
             ),
           ],
         ),
-      ),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              const Text(
+                'Добро пожаловать!',
+                style: TextStyle(fontSize: 28, fontWeight: FontWeight.w600),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 10),
+              const Text(
+                'Ваш инструмент для учета углеродного следа.',
+                style: TextStyle(fontSize: 16),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 40),
+              Center(child: _buildImage(imageUrl)),
+              const SizedBox(height: 40),
+              Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 300),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      _buildNavigationButton(
+                        context,
+                        'Добавить новую поездку',
+                        '/add-trip',
+                        extra: 0.0,
+                      ),
+                      _buildNavigationButton(context, 'История поездок', '/history'),
+                      _buildNavigationButton(context, 'Эко-Профиль', '/profile'),
+                      _buildNavigationButton(
+                        context,
+                        'Сравнение транспорта',
+                        '/transports-compare',
+                        extra: availableTransports,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      )
     );
   }
 
@@ -133,7 +134,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSimpleButton(
+  Widget _buildNavigationButton(
     BuildContext context,
     String title,
     String path, {
@@ -143,7 +144,7 @@ class HomeScreen extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: ElevatedButton(
         onPressed: () {
-          context.go(path, extra: extra);
+          context.push(path, extra: extra);
         },
         style: ElevatedButton.styleFrom(
           padding: const EdgeInsets.symmetric(vertical: 20),

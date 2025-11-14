@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../main.dart';
 
@@ -11,14 +12,9 @@ class AuthorizationScreen extends StatefulWidget {
 
 class _AuthorizationScreenState extends State<AuthorizationScreen> {
   final _formKey = GlobalKey<FormState>();
-  static const String appName = 'CarbonTrack App';
 
   void _handleLogin() {
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute<void>(
-        builder: (context) => const HomeScreen(appName: appName),
-      ),
-    );
+    context.pushReplacement('/home');
   }
 
   @override
