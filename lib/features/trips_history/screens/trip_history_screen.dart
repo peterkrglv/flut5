@@ -9,9 +9,9 @@ class TripHistoryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const String placeholderImageUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTi6OfyjMF4VZFpCJHkjLLA3ndCjMeLQwBKxA&s";
+    const String placeholderImageUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Bew_75km.JPG/1280px-Bew_75km.jpg";
 
-    return Consumer<EcoDataManager>(
+  return Consumer<EcoDataManager>(
       builder: (context, dataManager, child) {
         final List<TripModel> trips = dataManager.trips;
 

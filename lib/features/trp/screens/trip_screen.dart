@@ -144,7 +144,7 @@ class FootprintResultCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const String iconUrl = "https://img.freepik.com/premium-vector/eco-co2-icon-vector-green-energy-carbon-emission-reduction-symbols_759725-1376.jpg";
+    const String iconUrl = "https://static.vecteezy.com/system/resources/previews/020/978/286/non_2x/carbon-dioxide-reduction-co2-emissions-gas-reduction-business-concept-isolated-illustration-vector.jpg";
     const double iconSize = 120.0;
 
     return Card(

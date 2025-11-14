@@ -8,7 +8,7 @@ class TransportScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final transports = getMockTransports();
-    const String imageUrl = "https://img.freepik.com/free-vector/eco-friendly-public-transport-people-use-electric-bus-kick-scooters-modern-city_88138-1955.jpg?semt=ais_hybrid&w=740&q=80";
+    const String imageUrl = "https://upload.wikimedia.org/wikipedia/commons/7/7a/KamAZ-6282_electric_bus_on_line_T25_in_Moscow.jpg";
 
     return Scaffold(
       appBar: AppBar(
