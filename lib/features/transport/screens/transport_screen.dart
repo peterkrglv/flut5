@@ -1,19 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:prac5/features/transport/models/transport_model.dart';
+import 'package:prac5/shared/app_state.dart';
 import 'package:go_router/go_router.dart';
 
-class TransportScreen extends StatelessWidget {
-  final List<TransportModel> transports;
+import '../../../shared/service_locator.dart';
 
+class TransportScreen extends StatelessWidget {
   const TransportScreen({
     super.key,
-    required this.transports
   });
 
   @override
   Widget build(BuildContext context) {
     const String imageUrl = "https://upload.wikimedia.org/wikipedia/commons/7/7a/KamAZ-6282_electric_bus_on_line_T25_in_Moscow.jpg";
+
+    if (locator.isRegistered<AppStateService>()) {
+      final List<TransportModel> transports = AppState.of(context).transports;
+    } else {
+      print("Ошибка: AppStateService не зарегистрирован в сервис-локаторе.");
+    }
 
     return Scaffold(
       appBar: AppBar(

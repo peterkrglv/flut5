@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:prac5/shared/app_router.dart';
 import 'package:prac5/shared/app_state.dart';
 import 'package:prac5/shared/eco_data_manager.dart';
+import 'package:prac5/shared/service_locator.dart';
 import 'package:provider/provider.dart';
 
 import 'features/transport/models/transport_model.dart';
@@ -38,6 +39,9 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appStateService = locator.get<AppStateService>();
+    final transport = appStateService.transport;
+
     final dataManager = Provider.of<EcoDataManager>(context, listen: false);
 
     final List<TransportModel> availableTransports =
