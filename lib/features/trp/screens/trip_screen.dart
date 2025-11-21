@@ -1,84 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:prac5/features/transport/models/transport_model.dart';
-import 'package:prac5/shared/eco_data_manager.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-class TripAddScreen extends StatefulWidget {
-  final double initialDistanceKm;
+import 'package:prac5/features/transport/models/transport_model.dart';
+import 'package:prac5/shared/eco_data_manager.dart';
+import '../cubit/trip_cubit.dart';
 
-  const TripAddScreen({
+class TripAddScreen extends StatelessWidget {
+  final double initialDistanceKm;
+  final TextEditingController _distanceController = TextEditingController();
+
+  TripAddScreen({
     super.key,
-    required this.initialDistanceKm
+    required this.initialDistanceKm,
   });
 
   @override
-  State<TripAddScreen> createState() => _TripAddScreenState();
-}
-
-class _TripAddScreenState extends State<TripAddScreen> {
-  final TextEditingController _distanceController = TextEditingController();
-  TransportModel? _selectedTransport;
-  double _calculatedFootprint = 0.0;
-
-  void _calculateFootprint() {
-    final double distance = double.tryParse(_distanceController.text) ?? 0.0;
-    if (_selectedTransport != null && distance > 0) {
-      setState(() {
-        _calculatedFootprint = distance * _selectedTransport!.co2PerKm;
-      });
-    } else {
-      setState(() {
-        _calculatedFootprint = 0.0;
-      });
-    }
-  }
-
-  void _saveTrip() {
-    if (_calculatedFootprint > 0) {
-      Provider.of<EcoDataManager>(context, listen: false).addTrip(
-        distanceKm: double.parse(_distanceController.text),
-        transport: _selectedTransport!,
-        carbonFootprintKg: _calculatedFootprint,
-      );
-
-      _distanceController.clear();
-      setState(() {
-        _selectedTransport = null;
-        _calculatedFootprint = 0.0;
-      });
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Поездка сохранена!')),
-      );
-    }
-  }
-
-  void _onFormChange() {
-    _calculateFootprint();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _distanceController.addListener(_onFormChange);
-
-    if (widget.initialDistanceKm > 0) {
-      _distanceController.text = widget.initialDistanceKm.toStringAsFixed(1);
-    }
-  }
-
-  @override
-  void dispose() {
-    _distanceController.removeListener(_onFormChange);
-    _distanceController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final transports = Provider.of<EcoDataManager>(context).availableTransports;
+    final EcoDataManager dataManager = context.read<EcoDataManager>();
+    final TripCubit tripCubit = context.read<TripCubit>();
+
+    if (initialDistanceKm > 0 && _distanceController.text.isEmpty) {
+      _distanceController.text = initialDistanceKm.toStringAsFixed(1);
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        tripCubit.updateDistance(_distanceController.text);
+      });
+    }
+
+    if (!_distanceController.hasListeners) {
+      _distanceController.addListener(() {
+        tripCubit.updateDistance(_distanceController.text);
+      });
+    }
+
+    final transports = dataManager.availableTransports;
 
     return Scaffold(
       appBar: AppBar(
@@ -86,69 +43,85 @@ class _TripAddScreenState extends State<TripAddScreen> {
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: () {
+            _distanceController.removeListener(() => tripCubit.updateDistance(_distanceController.text));
             context.pop();
           },
         ),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            TextFormField(
-              controller: _distanceController,
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
-              decoration: const InputDecoration(
-                labelText: 'Пройденное расстояние (км)',
-                border: OutlineInputBorder(),
-              ),
-            ),
-
-            const SizedBox(height: 20),
-
-            DropdownButtonFormField<TransportModel>(
-              decoration: const InputDecoration(
-                labelText: 'Вид транспорта',
-                border: OutlineInputBorder(),
-              ),
-              value: _selectedTransport,
-              items: transports.map((transport) {
-                return DropdownMenuItem<TransportModel>(
-                  value: transport,
-                  child: Row(
-                    children: [
-                      Icon(transport.iconData),
-                      const SizedBox(width: 10),
-                      Text(transport.name),
-                    ],
+      body: BlocBuilder<TripCubit, TripState>(
+        builder: (context, state) {
+          return SingleChildScrollView(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                TextFormField(
+                  controller: _distanceController,
+                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  decoration: const InputDecoration(
+                    labelText: 'Пройденное расстояние (км)',
+                    border: OutlineInputBorder(),
                   ),
-                );
-              }).toList(),
-              onChanged: (TransportModel? newValue) {
-                setState(() {
-                  _selectedTransport = newValue;
-                  _calculateFootprint();
-                });
-              },
+                ),
+
+                const SizedBox(height: 20),
+
+                DropdownButtonFormField<TransportModel>(
+                  decoration: const InputDecoration(
+                    labelText: 'Вид транспорта',
+                    border: OutlineInputBorder(),
+                  ),
+                  value: state.selectedTransport,
+                  items: transports.map((transport) {
+                    return DropdownMenuItem<TransportModel>(
+                      value: transport,
+                      child: Row(
+                        children: [
+                          Icon(transport.iconData),
+                          const SizedBox(width: 10),
+                          Text(transport.name),
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                  onChanged: (TransportModel? newValue) {
+                    tripCubit.updateTransport(newValue);
+                  },
+                ),
+
+                const SizedBox(height: 30),
+
+                FootprintResultCard(footprintKg: state.calculatedFootprintKg),
+
+                const SizedBox(height: 30),
+
+                ElevatedButton(
+                  onPressed: state.calculatedFootprintKg > 0 && state.selectedTransport != null
+                      ? () {
+                    dataManager.addTrip(
+                      distanceKm: state.distanceKm,
+                      transport: state.selectedTransport!,
+                      carbonFootprintKg: state.calculatedFootprintKg,
+                    );
+
+                    tripCubit.resetState();
+                    _distanceController.clear();
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Поездка сохранена!')),
+                    );
+                  }
+                      : null,
+                  child: const Text('Сохранить поездку', style: TextStyle(fontSize: 18)),
+                ),
+              ],
             ),
-
-            const SizedBox(height: 30),
-
-            FootprintResultCard(footprintKg: _calculatedFootprint),
-
-            const SizedBox(height: 30),
-
-            ElevatedButton(
-              onPressed: _calculatedFootprint > 0 ? _saveTrip : null,
-              child: const Text('Сохранить поездку', style: TextStyle(fontSize: 18)),
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
 }
-
 
 class FootprintResultCard extends StatelessWidget {
   final double footprintKg;
