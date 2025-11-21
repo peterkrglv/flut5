@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../main.dart';
+import '../cubit/auth_cubit.dart';
 
 class AuthorizationScreen extends StatefulWidget {
   const AuthorizationScreen({super.key});
@@ -13,8 +14,26 @@ class AuthorizationScreen extends StatefulWidget {
 class _AuthorizationScreenState extends State<AuthorizationScreen> {
   final _formKey = GlobalKey<FormState>();
 
+  final TextEditingController _loginController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  bool _isPasswordVisible = false;
+
+  @override
+  void dispose() {
+    _loginController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
   void _handleLogin() {
-    context.pushReplacement('/home');
+    if (_formKey.currentState!.validate()) {
+      final login = _loginController.text;
+
+      context.read<AuthCubit>().login(login);
+
+      context.go('/home');
+    }
   }
 
   @override
@@ -33,6 +52,7 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 TextFormField(
+                  controller: _loginController,
                   decoration: const InputDecoration(
                     labelText: 'Логин',
                     border: OutlineInputBorder(),
@@ -46,10 +66,21 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
                 ),
                 const SizedBox(height: 20),
                 TextFormField(
-                  obscureText: true,
-                  decoration: const InputDecoration(
+                  controller: _passwordController,
+                  obscureText: !_isPasswordVisible,
+                  decoration: InputDecoration(
                     labelText: 'Пароль',
-                    border: OutlineInputBorder(),
+                    border: const OutlineInputBorder(),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _isPasswordVisible = !_isPasswordVisible;
+                        });
+                      },
+                    ),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {

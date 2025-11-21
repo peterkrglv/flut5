@@ -5,7 +5,7 @@ import 'package:prac5/shared/app_router.dart';
 import 'package:prac5/shared/eco_data_manager.dart';
 import 'package:provider/provider.dart';
 
-import 'features/authorization/screens/auth_cubit.dart';
+import 'features/authorization/cubit/auth_cubit.dart';
 
 void main() {
   Bloc.observer = AppBlocObserver();

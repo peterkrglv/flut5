@@ -1,16 +1,23 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:prac5/shared/eco_data_manager.dart';
-import 'package:prac5/shared/service_locator.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:prac5/shared/eco_data_manager.dart';
 
+import '../authorization/cubit/auth_cubit.dart';
 import '../transport/models/transport_model.dart';
 
 class HomeScreen extends StatelessWidget {
   final String appName;
 
   const HomeScreen({required this.appName, super.key});
+
+  void _handleLogout(BuildContext context) {
+    context.read<AuthCubit>().logout();
+
+    context.go('/login');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +40,7 @@ class HomeScreen extends StatelessWidget {
               IconButton(
                 icon: const Icon(Icons.logout),
                 onPressed: () {
-                  context.go('/login');
+                  _handleLogout(context);
                 },
               ),
             ],
