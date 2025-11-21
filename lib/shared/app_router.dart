@@ -1,7 +1,10 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+
 import '../features/authorization/screens/auth_screen.dart';
 import '../features/home/home_screen.dart';
 import '../features/transport/screens/transport_screen.dart';
+import '../features/transport/сubit/transport_cubit.dart';
 import '../features/trips_history/screens/trip_history_screen.dart';
 import '../features/trp/screens/trip_screen.dart';
 import '../features/user_profile/screens/user_profile_screen.dart';
@@ -20,7 +23,10 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/transports-compare',
       builder: (context, state) {
-        return TransportScreen();
+        return BlocProvider<TransportCubit>(
+          create: (context) => TransportCubit(),
+          child: const TransportScreen(),
+        );
       },
     ),
     GoRoute(

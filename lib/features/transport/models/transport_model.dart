@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 
+import 'package:flutter/material.dart';
+
 class TransportModel {
   final int id;
   final String name;
   final IconData iconData;
   final double co2PerKm;
+  final bool isUserAdded;
 
   const TransportModel({
     required this.id,
     required this.name,
     required this.iconData,
     required this.co2PerKm,
+    this.isUserAdded = false,
   });
 
   TransportModel copyWith({
@@ -18,12 +22,14 @@ class TransportModel {
     String? name,
     IconData? iconData,
     double? co2PerKm,
+    bool? isUserAdded,
   }) {
     return TransportModel(
       id: id ?? this.id,
       name: name ?? this.name,
       iconData: iconData ?? this.iconData,
       co2PerKm: co2PerKm ?? this.co2PerKm,
+      isUserAdded: isUserAdded ?? this.isUserAdded,
     );
   }
 }
