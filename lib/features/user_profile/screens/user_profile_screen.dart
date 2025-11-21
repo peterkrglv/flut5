@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-import '../../../shared/eco_data_manager.dart';
+import '../cubit/user_cubit.dart';
 
 class UserProfileScreen extends StatelessWidget {
   const UserProfileScreen({super.key});
@@ -12,9 +12,9 @@ class UserProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     const String profileImageUrl = "https://cdn-icons-png.flaticon.com/512/8801/8801434.png";
 
-    return Consumer<EcoDataManager>(
-      builder: (context, dataManager, child) {
-        final userProfile = dataManager.userProfile;
+    return BlocBuilder<UserProfileCubit, UserProfileState>(
+      builder: (context, state) {
+        final userProfile = state.userProfile;
 
         return Scaffold(
           appBar: AppBar(

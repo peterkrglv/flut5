@@ -9,6 +9,7 @@ import '../features/transport/сubit/transport_cubit.dart';
 import '../features/trips_history/screens/trip_history_screen.dart';
 import '../features/trips_history/сubit/trip_history_cubit.dart';
 import '../features/trp/screens/trip_screen.dart';
+import '../features/user_profile/cubit/user_cubit.dart';
 import '../features/user_profile/screens/user_profile_screen.dart';
 import 'eco_data_manager.dart';
 
@@ -44,7 +45,14 @@ final GoRouter router = GoRouter(
     ),
     GoRoute(
       path: '/profile',
-      builder: (context, state) => const UserProfileScreen(),
+      builder: (context, state) {
+        final dataManager = context.read<EcoDataManager>();
+
+        return BlocProvider<UserProfileCubit>(
+          create: (context) => UserProfileCubit(dataManager),
+          child: const UserProfileScreen(),
+        );
+      },
     ),
     GoRoute(
       path: '/history',
