@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:prac5/features/trp/models/trip_model.dart';
-import 'package:prac5/shared/eco_data_manager.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+
+import '../../trp/models/trip_model.dart';
+import '../сubit/trip_history_cubit.dart';
 
 class TripHistoryScreen extends StatelessWidget {
   const TripHistoryScreen({super.key});
@@ -12,9 +13,11 @@ class TripHistoryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     const String placeholderImageUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Bew_75km.JPG/1280px-Bew_75km.jpg";
 
-    return Consumer<EcoDataManager>(
-      builder: (context, dataManager, child) {
-        final List<TripModel> trips = dataManager.trips;
+    final TripHistoryCubit cubit = context.read<TripHistoryCubit>();
+
+    return BlocBuilder<TripHistoryCubit, TripHistoryState>(
+      builder: (context, state) {
+        final List<TripModel> trips = state.trips;
 
         return Scaffold(
           appBar: AppBar(
@@ -51,13 +54,13 @@ class TripHistoryScreen extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             itemCount: trips.length,
             itemBuilder: (context, index) {
-              final trip = trips.reversed.toList()[index];
+              final trip = trips[index];
 
               return TripRow(
                 trip: trip,
                 key: ValueKey(trip.id),
                 onRemove: () {
-                  dataManager.deleteTrip(trip.id);
+                  cubit.deleteTrip(trip.id);
                 },
               );
             },

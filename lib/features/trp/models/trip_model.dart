@@ -1,7 +1,7 @@
 import 'package:prac5/features/transport/models/transport_model.dart';
 
 class TripModel {
-  final String id;
+  final int id;
   final DateTime date;
   final double distanceKm;
   final TransportModel transport;
@@ -16,7 +16,7 @@ class TripModel {
   });
 
   TripModel copyWith({
-    String? id,
+    int? id,
     DateTime? date,
     double? distanceKm,
     TransportModel? transport,
@@ -36,28 +36,28 @@ List<TripModel> getMockTripHistory() {
   final transports = getMockTransports();
   return [
     TripModel(
-      id: '1',
+      id: 1,
       date: DateTime.now().subtract(const Duration(days: 2)),
       distanceKm: 45.5,
       transport: transports[0],
       carbonFootprintKg: 45.5 * transports[0].co2PerKm / 1000,
     ),
     TripModel(
-      id: '2',
+      id: 2,
       date: DateTime.now().subtract(const Duration(days: 5)),
       distanceKm: 12.0,
       transport: transports[1],
       carbonFootprintKg: 12.0 * transports[1].co2PerKm / 1000,
     ),
     TripModel(
-      id: '3',
+      id: 3,
       date: DateTime.now().subtract(const Duration(days: 10)),
       distanceKm: 2.5,
       transport: transports[2],
       carbonFootprintKg: 2.5 * transports[2].co2PerKm / 1000,
     ),
     TripModel(
-      id: '4',
+      id: 4,
       date: DateTime.now().subtract(const Duration(days: 15)),
       distanceKm: 150.0,
       transport: transports[0],
